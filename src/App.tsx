@@ -1920,10 +1920,13 @@ const compressImage = (file: File, maxWidth = 300, maxHeight = 400): Promise<str
     }
   }, [studentsList, selectedClass, isLoading, globalWaliKelas, globalWaliKelasPutra, globalWaliKelasPutri]);
 
-  // Pemicu Otomatis: Ambil data dari Firebase saat kelas diklik
+ // Pemicu Otomatis: Langsung buka kelas tanpa menunggu Firebase agar tidak macet
   useEffect(() => {
     if (selectedClass) {
-      fetchStudents(selectedClass);
+      setIsLoading(false); // Paksa loading mati agar halaman raport langsung terbuka
+      if (typeof fetchStudents === 'function') {
+        fetchStudents(selectedClass);
+      }
     }
   }, [selectedClass]);
 

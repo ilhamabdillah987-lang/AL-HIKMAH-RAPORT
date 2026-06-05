@@ -9,7 +9,7 @@ import XLSXStyle from 'xlsx-js-style';
 import { Student, Subject, StudentIdentity } from './types';
 import { ChevronUp, ChevronDown, Printer, UserCircle, Plus, Edit, Trash2, X, Save, LogOut, Lock, User as LucideUser, Search, Settings, LayoutDashboard, FileText, ChevronRight, ChevronLeft, Menu, LogIn, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { db, auth, signOut, onAuthStateChanged, User as FirebaseUser, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, onSnapshot, waitForPendingWrites } from './firebase';where, onSnapshot, waitForPendingWrites } from './firebase';
+import { db, auth, signOut, onAuthStateChanged, User as FirebaseUser, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, onSnapshot, waitForPendingWrites } from './firebase';
 
 enum OperationType {
   CREATE = 'create',
@@ -772,27 +772,48 @@ const compressImage = (file: File, maxWidth = 300, maxHeight = 400): Promise<str
 };
 
 export default function App() {
-  const configSaveTimeouts = useRef<{ [key: string]: any }>({});
-  const pendingUpdatesRef = useRef<Record<string, { studentId: string; data: any; timer: any }>>({});
+  // 1. Ambil data dari localStorage secara permanen saat aplikasi dibuka/refresh
+  const [studentsList, setStudentsList] = useState<Student[]>(() => {
+    try {
+      const saved = localStorage.getItem('al_hikmah_students_permanent');
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.error("Gagal memuat data dari localStorage", error);
+      return [];
+    }
+  });
+
+  // 2. Kunci data secara otomatis ke storage browser setiap kali ada perubahan nilai/absen
+  useEffect(() => {
+    try {
+      if (studentsList && studentsList.length > 0) {
+        localStorage.setItem('al_hikmah_students_permanent', JSON.stringify(studentsList));
+      }
+    } catch (error) {
+      console.warn("Gagal mencadangkan data ke localStorage:", error);
+    }
+  }, [studentsList]);
+
+  // 3. Sistem pengaman bawaan asli aplikasi Anda (Hanya perlu ditulis 1 kali)
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       const pendingCount = Object.keys(pendingUpdatesRef.current).length;
       if (pendingCount > 0) {
-        // Trigger save synchronously or via fire-and-forget
         const list = Object.values(pendingUpdatesRef.current);
         list.forEach(({ studentId, data, timer }) => {
           clearTimeout(timer);
           delete pendingUpdatesRef.current[studentId];
           const cleaned = cleanUndefined(data);
-          updateDoc(doc(db, 'students', studentId), { ...cleaned, updatedAt: new Date().toISOString() }).catch(() => {});
+          updateDoc(doc(db, 'students', studentId), {
+            ...cleaned,
+            updatedAt: new Date().toISOString()
+          }).catch(() => {});
         });
-        
         e.preventDefault();
         e.returnValue = 'Data Anda sedang disimpan ke cloud...';
         return e.returnValue;
       }
     };
-
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);

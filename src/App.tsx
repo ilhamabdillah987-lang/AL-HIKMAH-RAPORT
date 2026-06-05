@@ -1916,10 +1916,16 @@ const compressImage = (file: File, maxWidth = 300, maxHeight = 400): Promise<str
           })
         }).catch(err => console.warn('Pencatatan backup lokal tertunda:', err));
       }, 2000);
-
       return () => clearTimeout(timer);
     }
   }, [studentsList, selectedClass, isLoading, globalWaliKelas, globalWaliKelasPutra, globalWaliKelasPutri]);
+
+  // Pemicu Otomatis: Ambil data dari Firebase saat kelas diklik
+  useEffect(() => {
+    if (selectedClass) {
+      fetchStudents(selectedClass);
+    }
+  }, [selectedClass]);
 
   const pullBackupFromServer = async (classNameStr: string, quiet = false) => {
     if (!classNameStr) return;

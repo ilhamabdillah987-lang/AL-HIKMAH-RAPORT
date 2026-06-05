@@ -61,13 +61,19 @@ interface FirestoreErrorInfo {
   }
 }
 
-const handleFirestoreError = (error: unknown, operationType: OperationType, path: string | null) => {
-  const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
-    authInfo: {
-      userId: auth.currentUser?.uid,
-      email: auth.currentUser?.email,
-      emailVerified: auth.currentUser?.emailVerified,
+const handleSaveStudent = (newStudentData: Student) => {
+  setStudents((prevStudents) => {
+    const updated = [...prevStudents, newStudentData];
+    // useEffect di Langkah 2 akan otomatis mendeteksi ini dan menyimpannya permanen
+    return updated;
+  });
+};const handleSaveStudent = (newStudentData: Student) => {
+  setStudents((prevStudents) => {
+    const updated = [...prevStudents, newStudentData];
+    // useEffect di Langkah 2 akan otomatis mendeteksi ini dan menyimpannya permanen
+    return updated;
+  });
+};
     },
     operationType,
     path

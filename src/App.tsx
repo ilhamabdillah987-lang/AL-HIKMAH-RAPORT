@@ -824,6 +824,15 @@ const compressImage = (file: File, maxWidth = 300, maxHeight = 400): Promise<str
     '12 SMA Putra', '12 SMA Putri', '12 SMA Putra & Putri',
     'ALUMNI'
   ];
+   // KODE BYPASS DARURAT: Memaksa halaman kelas langsung terbuka tanpa loading macet
+useEffect(() => {
+  if (selectedClass && isLoading) {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }
+}, [selectedClass, isLoading]);
   const [selectedClass, setSelectedClass] = useState<string>(() => localStorage.getItem('selected_class') || '');
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
   const [globalWaliKelas, setGlobalWaliKelas] = useState<string>('');

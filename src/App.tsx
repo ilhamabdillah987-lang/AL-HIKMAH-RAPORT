@@ -824,16 +824,11 @@ const compressImage = (file: File, maxWidth = 300, maxHeight = 400): Promise<str
     '12 SMA Putra', '12 SMA Putri', '12 SMA Putra & Putri',
     'ALUMNI'
   ];
-   // KODE BYPASS DARURAT: Memaksa halaman kelas langsung terbuka tanpa loading macet
-useEffect(() => {
-  if (selectedClass && isLoading) {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }
-}, [selectedClass, isLoading]);
-  const [selectedClass, setSelectedClass] = useState<string>(() => localStorage.getItem('selected_class') || '');
+   
+  // KODE BYPASS DARURAT: Dipindahkan ke dalam fungsi App agar tidak blank putih
+export default function App() {
+  const [selectedClass, setSelectedClass] = useState<string>(() => localStorage.getItem('selected_class') || '')
+
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
   const [globalWaliKelas, setGlobalWaliKelas] = useState<string>('');
   const [globalWaliKelasPutra, setGlobalWaliKelasPutra] = useState<string>('');
@@ -879,7 +874,18 @@ useEffect(() => {
   const [isConfigsLoading, setIsConfigsLoading] = useState(false);
 
   const [teachersList, setTeachersList] = useState<any[]>([]);
-  const [isTeachersLoading, setIsTeachersLoading] = useState(false);
+ const [isTeachersLoading, setIsTeachersLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // KODE BYPASS DARURAT: Memaksa halaman kelas langsung terbuka tanpa loading macet
+  useEffect(() => {
+    if (selectedClass) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedClass]);
 
   // Teacher CRUD Form States
   const [teacherFormName, setTeacherFormName] = useState('');

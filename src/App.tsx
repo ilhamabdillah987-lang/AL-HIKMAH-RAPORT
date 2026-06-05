@@ -11,14 +11,16 @@ export const saveDraftToLocal = (key: string, data: any) => {
   }
 };
 
-// Fungsi untuk mengambil draf dari localStorage
-export const loadDraftFromLocal = (key: string, defaultValue: any) => {
-  try {
-    const saved = localStorage.getItem(key);
-    return saved ? JSON.parse(saved) : defaultValue;
-  } catch (error) {
-    console.error("Gagal memuat draf dari localStorage", error);
-    return defaultValue;
+// Ganti baris useState lama Anda menjadi seperti ini:
+const [students, setStudents] = useState<any[]>(() => {
+  const saved = localStorage.getItem('al_hikmah_raport_data');
+  return saved ? JSON.parse(saved) : [];
+});
+
+// Dan pastikan Anda menaruh useEffect ini tepat di bawahnya:
+useEffect(() => {
+  localStorage.setItem('al_hikmah_raport_data', JSON.stringify(students));
+}, [students]);
   }
 };
 

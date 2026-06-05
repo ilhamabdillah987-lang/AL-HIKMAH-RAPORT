@@ -2,7 +2,30 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
+// Fungsi untuk menyimpan draf ke localStorage
+export const saveDraftToLocal = (key: string, data: any) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.error("Gagal menyimpan draf ke localStorage", error);
+  }
+};
 
+// Fungsi untuk mengambil draf dari localStorage
+export const loadDraftFromLocal = (key: string, defaultValue: any) => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : defaultValue;
+  } catch (error) {
+    console.error("Gagal memuat draf dari localStorage", error);
+    return defaultValue;
+  }
+};
+
+// Fungsi untuk menghapus draf setelah berhasil disubmit ke server
+export const clearDraftFromLocal = (key: string) => {
+  localStorage.removeItem(key);
+};
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import XLSXStyle from 'xlsx-js-style';

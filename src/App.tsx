@@ -770,8 +770,7 @@ const compressImage = (file: File, maxWidth = 300, maxHeight = 400): Promise<str
     reader.readAsDataURL(file);
   });
 };
-
-export default function App() {
+ export default function App() {
   // 1. Ambil data dari localStorage secara permanen saat aplikasi dibuka/refresh
   const [studentsList, setStudentsList] = useState<Student[]>(() => {
     try {
@@ -794,7 +793,7 @@ export default function App() {
     }
   }, [studentsList]);
 
-  // 3. Sistem pengaman bawaan asli aplikasi Anda (Hanya perlu ditulis 1 kali)
+  // 3. Sistem pengaman bawaan asli aplikasi Anda
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       const pendingCount = Object.keys(pendingUpdatesRef.current).length;
@@ -831,10 +830,8 @@ export default function App() {
     '12 SMA Putra', '12 SMA Putri', '12 SMA Putra & Putri',
     'ALUMNI'
   ];
-
   const [selectedClass, setSelectedClass] = useState<string>(() => localStorage.getItem('selected_class') || '');
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
-  const [studentsList, setStudentsList] = useState<Student[]>([]);
   const [globalWaliKelas, setGlobalWaliKelas] = useState<string>('');
   const [globalWaliKelasPutra, setGlobalWaliKelasPutra] = useState<string>('');
   const [globalWaliKelasPutri, setGlobalWaliKelasPutri] = useState<string>('');

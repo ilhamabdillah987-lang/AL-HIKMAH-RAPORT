@@ -2,44 +2,14 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-// Fungsi untuk menyimpan draf ke localStorage
-export const saveDraftToLocal = (key: string, data: any) => {
-  try {
-    localStorage.setItem(key, JSON.stringify(data));
-  } catch (error) {
-    console.error("Gagal menyimpan draf ke localStorage", error);
-  }
-};
 
-const [students, setStudents] = useState<Student[]>(() => {
-  // Mengambil data dari localStorage saat aplikasi pertama kali dimuat
-  const savedStudents = localStorage.getItem('al_hikmah_raport_data');
-  return savedStudents ? JSON.parse(savedStudents) : []; 
-});
-});
-
-import { useState, useEffect } from 'react'; // Pastikan useEffect sudah di-import di bagian atas
-
-// ... di dalam komponen utama Anda ...
-
-useEffect(() => {
-  // Setiap kali variable 'students' berubah nilainya, otomatis simpan ke storage browser
-  localStorage.setItem('al_hikmah_raport_data', JSON.stringify(students));
-}, [students]);
-  }
-};
-
-// Fungsi untuk menghapus draf setelah berhasil disubmit ke server
-export const clearDraftFromLocal = (key: string) => {
-  localStorage.removeItem(key);
-};
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import XLSXStyle from 'xlsx-js-style';
 import { Student, Subject, StudentIdentity } from './types';
 import { ChevronUp, ChevronDown, Printer, UserCircle, Plus, Edit, Trash2, X, Save, LogOut, Lock, User as LucideUser, Search, Settings, LayoutDashboard, FileText, ChevronRight, ChevronLeft, Menu, LogIn, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { db, auth, signOut, onAuthStateChanged, User as FirebaseUser, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, onSnapshot, waitForPendingWrites } from './firebase';
+import { db, auth, signOut, onAuthStateChanged, User as FirebaseUser, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, onSnapshot, waitForPendingWrites } from './firebase';where, onSnapshot, waitForPendingWrites } from './firebase';
 
 enum OperationType {
   CREATE = 'create',
@@ -60,7 +30,6 @@ interface FirestoreErrorInfo {
     emailVerified?: boolean | null;
   }
 }
-
 const handleSaveStudent = (newStudentData: Student) => {
   setStudents((prevStudents) => {
     const updated = [...prevStudents, newStudentData];
@@ -805,7 +774,6 @@ const compressImage = (file: File, maxWidth = 300, maxHeight = 400): Promise<str
 export default function App() {
   const configSaveTimeouts = useRef<{ [key: string]: any }>({});
   const pendingUpdatesRef = useRef<Record<string, { studentId: string; data: any; timer: any }>>({});
-
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       const pendingCount = Object.keys(pendingUpdatesRef.current).length;

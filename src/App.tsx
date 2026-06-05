@@ -11,14 +11,19 @@ export const saveDraftToLocal = (key: string, data: any) => {
   }
 };
 
-// Ganti baris useState lama Anda menjadi seperti ini:
-const [students, setStudents] = useState<any[]>(() => {
-  const saved = localStorage.getItem('al_hikmah_raport_data');
-  return saved ? JSON.parse(saved) : [];
+const [students, setStudents] = useState<Student[]>(() => {
+  // Mengambil data dari localStorage saat aplikasi pertama kali dimuat
+  const savedStudents = localStorage.getItem('al_hikmah_raport_data');
+  return savedStudents ? JSON.parse(savedStudents) : []; 
+});
 });
 
-// Dan pastikan Anda menaruh useEffect ini tepat di bawahnya:
+import { useState, useEffect } from 'react'; // Pastikan useEffect sudah di-import di bagian atas
+
+// ... di dalam komponen utama Anda ...
+
 useEffect(() => {
+  // Setiap kali variable 'students' berubah nilainya, otomatis simpan ke storage browser
   localStorage.setItem('al_hikmah_raport_data', JSON.stringify(students));
 }, [students]);
   }

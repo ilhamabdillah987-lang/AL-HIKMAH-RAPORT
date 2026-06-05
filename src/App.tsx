@@ -28,42 +28,36 @@ interface FirestoreErrorInfo {
     userId?: string | null;
     email?: string | null;
     emailVerified?: boolean | null;
-  }
-}
-const handleSaveStudent = (newStudentData: Student) => {
-  setStudents((prevStudents) => {
-    const updated = [...prevStudents, newStudentData];
-    // useEffect di Langkah 2 akan otomatis mendeteksi ini dan menyimpannya permanen
-    return updated;
-  });
-};const handleSaveStudent = (newStudentData: Student) => {
-  setStudents((prevStudents) => {
-    const updated = [...prevStudents, newStudentData];
-    // useEffect di Langkah 2 akan otomatis mendeteksi ini dan menyimpannya permanen
-    return updated;
-  });
-};
-    },
-    operationType,
-    path
   };
-  
-  const isQuotaError = errInfo.error.toLowerCase().includes('quota') || 
-                       errInfo.error.toLowerCase().includes('limit exceeded') ||
-                       errInfo.error.toLowerCase().includes('exhausted') ||
-                       errInfo.error.toLowerCase().includes('billing');
+}
 
-  if (isQuotaError) {
-    console.warn('Firestore Quota/Limit (Handled Gracefully): ', JSON.stringify(errInfo));
+// Tempatkan fungsi yang benar di sini:
+const handleSaveStudent = (newStudentData : Student ) => {
+  if (typeof setStudentsList === 'function' ) {
+    setStudentsList ((prevStudents ) => {
+      const updated = [...prevStudents, newStudentData ] ; 
+      return updated; 
+    } ) ; 
+  } 
+} ; 
+
+const isQuotaError = (errInfo : any ) => {
+  const isQuota = errInfo?.error?.toLowerCase().includes('quota') || 
+    errInfo?.error?.toLowerCase().includes('limit exceeded') || 
+    errInfo?.error?.toLowerCase().includes('exhausted') || 
+    errInfo?.error?.toLowerCase().includes('billing');
+    
+  if (isQuota ) {
+    console.warn ('Firestore Quota/Limit (Handled Gracefully): ' , JSON.stringify (errInfo ) ) ; 
   } else {
-    console.error('Firestore Error: ', JSON.stringify(errInfo));
-  }
+    console.error ('Firestore Error: ' , JSON.stringify (errInfo ) ) ; 
+  } 
   
-  if (typeof window !== 'undefined') {
-    const event = new CustomEvent('firestore-error', { detail: errInfo });
-    window.dispatchEvent(event);
-  }
-};
+  if (typeof window !== 'undefined' ) {
+    const event = new CustomEvent ('firestore-error' , {detail : errInfo } ) ; 
+    window.dispatchEvent (event ) ; 
+  } 
+} ;
 
 // No server needed, data is stored in Firebase
 const fadeIn = {
